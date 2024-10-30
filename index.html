@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>EchoX Runner</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://telegram.org;"/>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <script src="Echox.js"></script>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #unity-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="unity-canvas" tabindex="-1" style="background: url('Build/EchoX-Runner.jpg') center / cover"></canvas>
+    <script src="Build/EchoX-Runner.loader.js"></script>
+    <script>
+        var canvas = document.querySelector("#unity-canvas");
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        createUnityInstance(canvas, {
+            dataUrl: "Build/EchoX-Runner.data.br",
+            frameworkUrl: "Build/EchoX-Runner.framework.js.br",
+            codeUrl: "Build/EchoX-Runner.wasm.br",
+            streamingAssetsUrl: "StreamingAssets",
+            companyName: "echox",
+            productName: "EchoX Runner",
+            productVersion: "0.8",
+            matchWebGLToCanvasSize: true,
+            devicePixelRatio: window.devicePixelRatio,
+        }).then((unityInstance) => {
+            console.log('Instance created', window.Telegram.WebApp);
+            window.unityInstance = unityInstance;
+            window.unityInstance.SendMessage("TelegramController", "SetWebAppUser", JSON.stringify(window.Telegram.WebApp.initDataUnsafe.user));
+        });
+    </script>
+</body>
+</html>
